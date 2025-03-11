@@ -91,25 +91,14 @@ install_package "ca-certificates"
 install_package "gnome-terminal"
 install_package "gpg"
 install_package "apt-transport-https"
+install_package "mpv"
 printf "\n%.0s" {1..1}
 
-# install zsh and set it as the default shell
+# install zsh
 printf "${NOTE} Installing ${SKY_BLUE}core zsh${RESET} ...${RESET}\n"
 install_package "zsh"
 install_package "mercurial"
 install_package "zplug"
-if [[ "$SHELL" != *"zsh"* ]]; then
-    printf "${NOTE} Setting ${SKY_BLUE}zsh as the default shell${RESET} ...\n"
-
-    while ! chsh -s $(which zsh); do
-        printf "${ERROR} Authentication failed. Please enter the correct password.\n"
-        sleep 1
-    done
-
-    printf "${OK} Shell changed successfully to ${MAGENTA}zsh${RESET}\n"
-else
-    printf "${OK} Your shell is already set to ${MAGENTA}zsh${RESET}.\n"
-fi
 
 printf "\n%.0s" {1..1}
 
@@ -149,6 +138,20 @@ if command -v zsh >/dev/null; then
     cp -r 'zsh/.zshrc' ~/
     cp -r 'zsh/.zprofile' ~/
 
+    # set zsh as the default shell
+    if [[ "$SHELL" != *"zsh"* ]]; then
+        printf "${NOTE} Setting ${SKY_BLUE}zsh as the default shell${RESET} ...\n"
+
+        while ! chsh -s $(which zsh); do
+            printf "${ERROR} Authentication failed. Please enter the correct password.\n"
+            sleep 1
+        done
+
+        printf "${OK} Shell changed successfully to ${MAGENTA}zsh${RESET}\n"
+    else
+        printf "${OK} Your shell is already set to ${MAGENTA}zsh${RESET}.\n"
+    fi
+
     # copy additional oh-my-zsh themes from assets
     if [ -d "$HOME/.oh-my-zsh/themes" ]; then
         cp -r ./zsh/themes/* ~/.oh-my-zsh/themes
@@ -183,6 +186,8 @@ if ! command -v conda >/dev/null 2>&1; then
     rm miniconda.sh
     printf "${OK} Miniconda has been installed successfully\n"
 else
+    $HOME/miniconda/bin/conda init bash
+    $HOME/miniconda/bin/conda init zsh
     printf "${OK} Miniconda is already installed. Skipping\n"
 fi
 printf "\n%.0s" {1..1}  
@@ -222,6 +227,10 @@ printf "\n%.0s" {1..1}
 # install kitty terminal
 printf "${NOTE} Installing ${SKY_BLUE}kitty${RESET} ...${RESET}\n"
 install_package "kitty"
+# copy the kitty configuration file
+printf "${NOTE} Copying ${SKY_BLUE}kitty configuration${RESET} ...${RESET}\n"
+mkdir -p ~/.config/kitty
+printf "\n%.0s" {1..1}
 
 # install yazi
 printf "${NOTE} Installing ${SKY_BLUE}yazi${RESET} ...${RESET}\n"
@@ -251,3 +260,59 @@ else
         printf "${ERROR} ${YELLOW}yazi${RESET} failed to install.\n"
     fi
 fi
+# copy the yazi configuration file
+printf "${NOTE} Copying ${SKY_BLUE}yazi configuration${RESET} ...${RESET}\n"
+mkdir -p ~/.config/yazi
+cp -r yazi/* ~/.config/yazi
+printf "\n%.0s" {1..1}
+
+
+# install anki
+printf "${NOTE} Installing ${SKY_BLUE}Anki${RESET} ...${RESET}\n"
+if command -v anki > /dev/null 2>&1; then
+    printf "${OK} ${MAGENTA}Anki${RESET} is already installed. Skipping\n"
+else
+    install_package "libxcb-xinerama0"
+    install_package "libxcb-cursor0"
+    install_package "libnss3"
+    ANKI_URL="https://github.com/ankitects/anki/releases/download/25.02/anki-25.02-linux-qt6.tar.zst"
+    ANKI_FILE="anki.tar.zst"
+    wget -q --show-progress $ANKI_URL -O $ANKI_FILE
+    tar xaf $ANKI_FILE
+    cd anki
+    sudo ./install.sh
+    rm -rf ../anki $ANKI_FILE
+    if command -v anki > /dev/null 2>&1; then
+        printf "${OK} ${YELLOW}Anki${RESET} has been installed successfully\n"
+    else
+        printf "${ERROR} ${YELLOW}Anki${RESET} failed to install.\n"
+    fi
+fi
+
+# install tailscale
+printf "${NOTE} Installing ${SKY_BLUE}Tailscale${RESET} ...${RESET}\n"
+if command -v tailscale > /dev/null 2>&1; then
+    printf "${OK} ${MAGENTA}Tailscale${RESET} is already installed. Skipping\n"
+else
+    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+    apt_update
+    install_package "tailscale"
+    if command -v tailscale > /dev/null 2>&1; then
+        printf "${OK} ${YELLOW}Tailscale${RESET} has been installed successfully\n"
+    else
+        printf "${ERROR} ${YELLOW}Tailscale${RESET} failed to install.\n"
+    fi
+fi
+
+# install polybar
+printf "${NOTE} Installing ${SKY_BLUE}Polybar${RESET} ...${RESET}\n"
+install_package "polybar"
+# copy the polybar configuration file
+printf "${NOTE} Copying ${SKY_BLUE}polybar configuration${RESET} ...${RESET}\n"
+mkdir -p ~/.config/polybar
+cp -r polybar/* ~/.config/polybar
+chmod +x $HOME/.config/polybar/launch.sh
+mkdir -p ~/.config/autostart
+cp -r autostart/* ~/.config/autostart
+printf "\n%.0s" {1..1}

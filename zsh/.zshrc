@@ -12,3 +12,4 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+export ANKI_WAYLAND=1
