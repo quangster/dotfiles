@@ -11,5 +11,6 @@ plugins=(
     zsh-syntax-highlighting
 )
 
-source $ZSH/oh-my-zsh.sh
+source $ZSH/oh-my-zsh.shr
 export ANKI_WAYLAND=1
+alias lzd='lazydocker'
