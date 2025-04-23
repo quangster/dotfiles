@@ -316,3 +316,18 @@ chmod +x $HOME/.config/polybar/launch.sh
 mkdir -p ~/.config/autostart
 cp -r autostart/* ~/.config/autostart
 printf "\n%.0s" {1..1}
+
+# install yt-dlp
+printf "${NOTE} Installing ${SKY_BLUE}yt-dlp${RESET} ...${RESET}\n"
+if command -v yt-dlp > /dev/null 2>&1; then
+    printf "${OK} ${MAGENTA}yt-dlp${RESET} is already installed. Skipping\n"
+else
+    sudo add-apt-repository ppa:tomtomtom/yt-dlp 
+    apt_update
+    install_package "yt-dlp"
+    if command -v yt-dlp > /dev/null 2>&1; then
+        printf "${OK} ${YELLOW}yt-dlp${RESET} has been installed successfully\n"
+    else
+        printf "${ERROR} ${YELLOW}yt-dlp${RESET} failed to install.\n"
+    fi
+fi
