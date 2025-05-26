@@ -79,7 +79,7 @@ printf "${MAGENTA}Architecture${RESET}: $MACHINE_TYPE\n"
 printf "${BLUE}"===================================================="${RESET}\n"
 
 
-# install some basic packages
+# ----------install some basic packages----------
 apt_update
 apt_upgrade
 printf "${NOTE} Installing ${SKY_BLUE}some basic packages${RESET} ...${RESET}\n"
@@ -94,7 +94,8 @@ install_package "apt-transport-https"
 install_package "mpv"
 printf "\n%.0s" {1..1}
 
-# install zsh
+
+# ----------install zsh----------
 printf "${NOTE} Installing ${SKY_BLUE}core zsh${RESET} ...${RESET}\n"
 install_package "zsh"
 install_package "mercurial"
@@ -102,7 +103,8 @@ install_package "zplug"
 
 printf "\n%.0s" {1..1}
 
-# install oh-my-zsh, plugins
+
+# ----------install oh-my-zsh, plugins----------
 if command -v zsh >/dev/null; then
     printf "${NOTE} Installing ${SKY_BLUE}Oh My Zsh and plugins${RESET} ...\n"
 
@@ -160,7 +162,8 @@ fi
 
 printf "\n%.0s" {1..1}
 
-# install docker
+
+# ----------install docker----------
 apt_update
 printf "${NOTE} Installing ${SKY_BLUE}docker, docker compose${RESET} ...${RESET}\n"
 if ! command -v docker >/dev/null; then
@@ -175,7 +178,8 @@ apt_update
 install_package "docker-compose-plugin"
 printf "\n%.0s" {1..1}
 
-# install miniconda
+
+# ----------install miniconda----------
 printf "${NOTE} Installing ${SKY_BLUE}miniconda${RESET} ...${RESET}\n"
 if ! command -v conda >/dev/null 2>&1; then
     curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh
@@ -192,7 +196,8 @@ else
 fi
 printf "\n%.0s" {1..1}  
 
-# install vscode
+
+# ----------install vscode----------
 printf "${NOTE} Installing ${SKY_BLUE}Visual Studio Code${RESET} ...${RESET}\n"
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
 sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
@@ -201,20 +206,23 @@ rm -f packages.microsoft.gpg
 apt_update
 install_package "code"
 
-# install ms edge
+
+# ----------install ms edge----------
 printf "${NOTE} Installing ${SKY_BLUE}Microsoft Edge${RESET} ...${RESET}\n"
 echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/edge stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge.list > /dev/null
 apt_update
 install_package "microsoft-edge-stable"
 
-# install spotify
+
+# ----------install spotify----------
 printf "${NOTE} Installing ${SKY_BLUE}Spotify${RESET} ...${RESET}\n"
 curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
 echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 apt_update
 install_package "spotify-client"
 
-# install ibus-bamboo
+
+# ----------install ibus-bamboo----------
 printf "${NOTE} Installing ${SKY_BLUE}ibus-bamboo${RESET} ...${RESET}\n"
 sudo add-apt-repository -y ppa:bamboo-engine/ibus-bamboo
 apt_update
@@ -224,7 +232,8 @@ ibus restart
 env DCONF_PROFILE=ibus dconf write /desktop/ibus/general/preload-engines "['BambooUs', 'Bamboo']" && gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'Bamboo')]"
 printf "\n%.0s" {1..1}
 
-# install kitty terminal
+
+# ----------install kitty terminal----------
 printf "${NOTE} Installing ${SKY_BLUE}kitty${RESET} ...${RESET}\n"
 install_package "kitty"
 # copy the kitty configuration file
@@ -232,7 +241,8 @@ printf "${NOTE} Copying ${SKY_BLUE}kitty configuration${RESET} ...${RESET}\n"
 mkdir -p ~/.config/kitty
 printf "\n%.0s" {1..1}
 
-# install yazi
+
+# ----------install yazi----------
 printf "${NOTE} Installing ${SKY_BLUE}yazi${RESET} ...${RESET}\n"
 yazi=(
     ffmpeg 
@@ -267,7 +277,7 @@ cp -r yazi/* ~/.config/yazi
 printf "\n%.0s" {1..1}
 
 
-# install anki
+# ----------install anki----------
 printf "${NOTE} Installing ${SKY_BLUE}Anki${RESET} ...${RESET}\n"
 if command -v anki > /dev/null 2>&1; then
     printf "${OK} ${MAGENTA}Anki${RESET} is already installed. Skipping\n"
@@ -289,6 +299,7 @@ else
     fi
 fi
 
+
 # install tailscale
 printf "${NOTE} Installing ${SKY_BLUE}Tailscale${RESET} ...${RESET}\n"
 if command -v tailscale > /dev/null 2>&1; then
@@ -305,19 +316,8 @@ else
     fi
 fi
 
-# install polybar
-printf "${NOTE} Installing ${SKY_BLUE}Polybar${RESET} ...${RESET}\n"
-install_package "polybar"
-# copy the polybar configuration file
-printf "${NOTE} Copying ${SKY_BLUE}polybar configuration${RESET} ...${RESET}\n"
-mkdir -p ~/.config/polybar
-cp -r polybar/* ~/.config/polybar
-chmod +x $HOME/.config/polybar/launch.sh
-mkdir -p ~/.config/autostart
-cp -r autostart/* ~/.config/autostart
-printf "\n%.0s" {1..1}
 
-# install yt-dlp
+# ----------install yt-dlp----------
 printf "${NOTE} Installing ${SKY_BLUE}yt-dlp${RESET} ...${RESET}\n"
 if command -v yt-dlp > /dev/null 2>&1; then
     printf "${OK} ${MAGENTA}yt-dlp${RESET} is already installed. Skipping\n"
